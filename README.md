@@ -125,7 +125,4 @@ This will cleanly exit and reset the terminal.
 
 ## **Credits**
 - **Developer**: cybersecuritysolution
-- **Date**: 11/22/2024
 
-**NetDetect** offers a powerful way to monitor and debug network paths in real time. Try it out today!
-```
