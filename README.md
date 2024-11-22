@@ -124,5 +124,5 @@ This will cleanly exit and reset the terminal.
 ---
 
 ## **Credits**
-- **Developer**: cybersecuritysolution
+- **Developer**: Sergio Marquina
 
