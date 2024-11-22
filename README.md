@@ -8,6 +8,7 @@ NetDetect is a powerful diagnostic tool for real-time network path visualization
 Before using NetDetect, ensure you have the following:
 - A Linux-based operating system.
 - Sudo privileges.
+- **A ProxyCheck API Key**: The script requires an API key to fetch geolocation and proxy information. You can obtain a free API key from [proxycheck.io](https://proxycheck.io/dashboard/).
 
 ---
 
@@ -46,6 +47,16 @@ Use the following command to execute NetDetect:
 sudo ./mtr-netdetect.sh google.com
 ```
 Replace `google.com` with any domain or IP address you want to analyze.
+
+### **3. Add Your API Key**
+The script requires your ProxyCheck API key to function. You can set your API key in the script by editing the `api_key` variable:
+```bash
+nano mtr-netdetect.sh
+```
+Update the following line with your API key:
+```bash
+api_key="your_api_key_here"
+```
 
 ---
 
@@ -107,6 +118,9 @@ This will cleanly exit and reset the terminal.
   sudo apt install jq curl mtr -y
   ```
 
+### **API Key Issues**
+- Verify that your ProxyCheck API key is correct and entered in the `api_key` variable of the script.
+
 ---
 
 ## **Credits**
@@ -114,5 +128,4 @@ This will cleanly exit and reset the terminal.
 - **Date**: 11/22/2024
 
 **NetDetect** offers a powerful way to monitor and debug network paths in real time. Try it out today!
-``` 
-
+```
