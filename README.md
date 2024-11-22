@@ -1,3 +1,4 @@
+```markdown
 # **NetDetect Installation and Usage Guide**
 
 NetDetect is a powerful diagnostic tool for real-time network path visualization and analysis. Below is the updated step-by-step guide for installing, configuring, and using NetDetect.
@@ -12,6 +13,7 @@ Before using NetDetect, ensure you have the following:
 ---
 
 ## **Step 1: Installation**
+
 ### **1. Install Required Dependencies**
 Run the following command to install the necessary dependencies:
 ```bash
@@ -22,7 +24,7 @@ sudo apt update && sudo apt install jq curl mtr -y
 Move to your desired directory and download the script:
 ```bash
 cd ~
-wget -O mtr-netdetect.sh https://github.com/your-repo-url/mtr-netdetect.sh
+wget -O mtr-netdetect.sh https://raw.githubusercontent.com/Cybersecsolution/NetDetect/refs/heads/main/mtr-netdetect.sh
 ```
 
 ### **3. Make the Script Executable**
@@ -34,6 +36,7 @@ chmod +x mtr-netdetect.sh
 ---
 
 ## **Step 2: Running the Script**
+
 ### **1. Navigate to the Script Directory**
 Move to the directory where the script is located:
 ```bash
@@ -43,7 +46,7 @@ cd /path/to/script
 ### **2. Run the Script**
 Use the following command to execute NetDetect:
 ```bash
-./mtr-netdetect.sh google.com
+sudo ./mtr-netdetect.sh google.com
 ```
 Replace `google.com` with any domain or IP address you want to analyze.
 
@@ -72,6 +75,7 @@ This will cleanly exit and reset the terminal.
 ---
 
 ## **How to Use NetDetect**
+
 1. Execute the script:
    ```bash
    ./mtr-netdetect.sh <domain_or_ip>
@@ -88,6 +92,7 @@ This will cleanly exit and reset the terminal.
 ---
 
 ## **Troubleshooting**
+
 ### **Error: Command Not Found**
 - Ensure you're in the correct directory where `mtr-netdetect.sh` is located.
 - Use the absolute path:
@@ -114,3 +119,4 @@ This will cleanly exit and reset the terminal.
 - **Date**: 11/22/2024
 
 **NetDetect** offers a powerful way to monitor and debug network paths in real time. Try it out today!
+``` 
