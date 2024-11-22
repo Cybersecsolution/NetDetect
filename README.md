@@ -8,7 +8,6 @@ NetDetect is a powerful diagnostic tool for real-time network path visualization
 Before using NetDetect, ensure you have the following:
 - A Linux-based operating system.
 - Sudo privileges.
-- **A ProxyCheck API Key**: The script requires an API key to fetch geolocation and proxy information. You can obtain a free API key from [proxycheck.io](https://proxycheck.io/dashboard/).
 
 ---
 
@@ -52,10 +51,6 @@ Replace `google.com` with any domain or IP address you want to analyze.
 The script requires your ProxyCheck API key to function. You can set your API key in the script by editing the `api_key` variable:
 ```bash
 nano mtr-netdetect.sh
-```
-Update the following line with your API key:
-```bash
-api_key="your_api_key_here"
 ```
 
 ---
