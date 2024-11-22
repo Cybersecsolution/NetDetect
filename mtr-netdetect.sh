@@ -1,45 +1,52 @@
 #!/bin/bash
+
 host=${1:-google.com}
-api_key="API-KEY HERE"  # Your API key
-packet_count=5  # Number of packets to send per hop
-packet_interval=0.5  # Reduce time interval for faster updates
-row_limit=15  # Limit the number of hops displayed to 15
+packet_count=5
+packet_interval=0.5
+row_limit=10
+refresh_interval=10
 
-# Function to format and display rows with fixed-width columns
+# Define color codes
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+ORANGE='\033[0;33m'
+WHITE='\033[0;37m'
+NC='\033[0m' # No color
+
+# Function to format and display rows with fixed-width columns and colors
 format_row() {
-    printf " %-4s | %-22.22s | %-7s | %-5s | %-7s | %-7s | %-7s | %-7s | %-7s | %-18.18s | %-12.12s | %-18.18s | %-3s | %-10.10s | %-4s\n" \
-    "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
+    printf " %-4s | ${GREEN}%-22s${NC} | ${RED}%-7s${NC} | ${GREEN}%-5s${NC} | ${ORANGE}%-7s${NC} | ${ORANGE}%-7s${NC} | %-7s | ${RED}%-7s${NC} | %-18s | %-18s\n" \
+    "${1:-N/A}" "${2:-N/A}" "${3:-N/A}" "${4:-N/A}" "${5:-N/A}" "${6:-N/A}" "${7:-N/A}" "${8:-N/A}" "${9:-N/A}" "${10:-N/A}"
 }
 
-# Function to display a welcome message
+# Display welcome message
 print_welcome_message() {
-    tput clear  # Clear the screen
-    echo "======================================================================================================================================================================================="
-    echo "                                                                Welcome to MTR NetDetect                                          "
-    echo "                                                           Developer: Sergio Marquina                                    "
-    echo "                                                                  Date: $(date +"%m/%d/%Y")                                       "
-    echo "======================================================================================================================================================================================="
+    tput clear
+    echo "============================================================================================================================"
+    echo "                                      Welcome to MTR NetDetect"
+    echo "                                     Developer: Sergio Marquina"
+    echo "                                         Date: $(date +"%m/%d/%Y")"
+    echo "============================================================================================================================"
 }
 
-# Print table header with consistent alignment
+# Print table header
 print_table_header() {
-    echo " Hops  | Host                   | Loss%   | Sent  | Last    | Avg     | Best    | Wrst    | StDev   | Country            | State        | City               | VPN | ASN        | Risk"
-    echo "======================================================================================================================================================================================="
+    echo " Hops  | Host                   | Loss%   | Sent  | Last    | Avg     | Best    | Wrst    | Country            | State"
+    echo "============================================================================================================================"
 }
 
-# Update specific row dynamically
+# Update a specific row
 update_row() {
     row=$1
     shift
-    tput cup $((row + 6))  # Adjust rows to account for the welcome message and header
+    tput cup $((row + 6))
     format_row "$@"
 }
 
 # Parse MTR output
 parse_mtr_output() {
     local row=1
-    sudo mtr -n -r -c "$packet_count" --interval "$packet_interval" "$host" | sed '/HOST:/d' | tail -n +2 | while read -r line; do
-        # Break if row limit (15 hops) is reached
+    sudo mtr -n -r -c "$packet_count" --interval "$packet_interval" "$host" | tail -n +2 | while read -r line; do
         if [[ $row -gt $row_limit ]]; then
             break
         fi
@@ -52,49 +59,45 @@ parse_mtr_output() {
         avg=$(echo "$line" | awk '{print $6}')
         best=$(echo "$line" | awk '{print $7}')
         worst=$(echo "$line" | awk '{print $8}')
-        stdev=$(echo "$line" | awk '{print $9}')
 
-        # Handle unresolved hosts
-        if [[ ! $ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            update_row "$row" "$hop" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A"
-            ((row++))
+        if [[ $ip == "???" || $ip == "" ]]; then
             continue
         fi
 
-        # Fetch ProxyCheck data asynchronously
-        (
-            response=$(curl -s "https://proxycheck.io/v2/$ip?key=$api_key&vpn=1&asn=1&risk=1&time=1")
-            country=$(echo "$response" | jq -r ".\"$ip\".country // \"N/A\"")
-            state=$(echo "$response" | jq -r ".\"$ip\".region // \"N/A\"")
-            city=$(echo "$response" | jq -r ".\"$ip\".city // \"N/A\"")
-            proxy=$(echo "$response" | jq -r ".\"$ip\".proxy // \"N/A\"")
-            asn=$(echo "$response" | jq -r ".\"$ip\".asn // \"N/A\"")
-            risk=$(echo "$response" | jq -r ".\"$ip\".risk // \"N/A\"")
+        # Fetch geolocation data using ipwhois.app
+        response=$(curl -s "https://ipwhois.app/json/$ip")
+        country=$(echo "$response" | jq -r ".country // \"N/A\"")
+        state=$(echo "$response" | jq -r ".region // \"N/A\"")
 
-            # Update the row with aligned data
-            update_row "$row" "$hop" "$ip" "$loss" "$sent" "$last" "$avg" "$best" "$worst" "$stdev" \
-            "$country" "$state" "$city" "$proxy" "$asn" "$risk"
-        ) &
+        # Update row with parsed data
+        update_row "$row" "$hop" "$ip" "$loss" "$sent" "$last" "$avg" "$best" "$worst" \
+        "$country" "$state"
+
         ((row++))
     done
-    wait  # Wait for all ProxyCheck.io queries to finish
+    wait
 }
 
-# Cleanup function for Ctrl+C
+# Cleanup on exit
 cleanup() {
-    tput clear  # Clear the screen
+    tput clear
     echo ""
     exit 0
 }
 
 # Main function
 main() {
-    # Trap SIGINT (Ctrl+C) and call cleanup
     trap cleanup SIGINT
-    print_welcome_message  # Display the welcome message
-    print_table_header     # Print the table header
+    print_welcome_message
+    print_table_header
+
     while true; do
+        tput cup 7 0
+        for i in $(seq 1 $row_limit); do
+            update_row "$i" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A" "N/A"
+        done
         parse_mtr_output
+        sleep "$refresh_interval"
     done
 }
 
