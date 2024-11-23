@@ -1,4 +1,4 @@
-Here's a cleaner and more refined version of your guide with improved formatting and minor adjustments for clarity and consistency:
+
 
 ---
 
