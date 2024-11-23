@@ -122,4 +122,3 @@ The script provides information such as:
 
 --- 
 
-This version is concise, professional, and easy to follow. Let me know if you need further adjustments!
