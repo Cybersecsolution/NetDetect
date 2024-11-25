@@ -1,10 +1,6 @@
+# **Paping Installation and Usage Guide**
 
-
----
-
-# **NetDetect Installation and Usage Guide**
-
-NetDetect is a diagnostic tool for real-time network path visualization and analysis. This guide provides step-by-step instructions for installing, configuring, and using NetDetect.
+Paping is a network utility for testing TCP connectivity to a specific hostname or IP address. This guide provides step-by-step instructions for installing, compiling, and using Paping on Ubuntu.
 
 ---
 
@@ -12,113 +8,107 @@ NetDetect is a diagnostic tool for real-time network path visualization and anal
 Ensure you meet the following requirements:
 - A Linux-based operating system.
 - Sudo privileges.
+- Basic familiarity with terminal commands.
 
 ---
 
 ## **Step 1: Installation**
 
-### **1. Install Required Dependencies**
-Run this command to install the necessary dependencies:
+### **1. Clone the Repository**
+Download the `paping` source code from GitHub:
 ```bash
-sudo apt update && sudo apt install jq curl mtr -y
+git clone https://github.com/koolhazz/paping.git
 ```
 
-### **2. Download the Script**
-Navigate to your desired directory and download the script:
+Navigate to the cloned directory:
 ```bash
-cd ~
-wget -O mtr-netdetect.sh https://raw.githubusercontent.com/Cybersecsolution/NetDetect/refs/heads/main/mtr-netdetect.sh
+cd paping
 ```
 
-### **3. Make the Script Executable**
-Provide executable permissions:
+### **2. Update the System**
+Run the following command to update your package list:
 ```bash
-chmod +x mtr-netdetect.sh
+sudo apt update
+```
+
+### **3. Install Required Dependencies**
+Install the necessary tools and libraries:
+```bash
+sudo apt install build-essential g++ g++-multilib libssl-dev
+```
+
+### **4. Create the Output Directory**
+Set up the directory to store the compiled binary:
+```bash
+mkdir -p ./bin
 ```
 
 ---
 
-## **Step 2: Running the Script**
-Run NetDetect with the following command:
+## **Step 2: Compile the Code**
+Build the project using `make`:
 ```bash
-sudo ./mtr-netdetect.sh google.com
+make
 ```
-Replace `google.com` with the domain or IP address you wish to analyze.
 
 ---
 
-## **Step 3: Optional Global Installation**
-To run NetDetect from any directory:
-1. Move the script to `/usr/local/bin`:
+## **Step 3: Running Paping**
+
+### **1. Execute the Binary**
+Run `paping` using the compiled binary. Replace `www.google.com` with your target hostname or IP address, and `80` with the desired port:
+```bash
+./bin/i386-paping www.google.com -p 80 -c 4
+```
+
+### **2. Command Explanation**
+- **`www.google.com`**: The target hostname.
+- **`-p 80`**: Specifies the port number (80 for HTTP).
+- **`-c 4`**: Sets the number of connection attempts (4 in this example).
+
+---
+
+## **Step 4: Optional Global Installation**
+To make `paping` accessible globally:
+1. Move the compiled binary to `/usr/local/bin`:
    ```bash
-   sudo mv mtr-netdetect.sh /usr/local/bin/
+   sudo cp ./bin/i386-paping /usr/local/bin/paping
    ```
-2. Execute it globally:
+2. Run `paping` from anywhere:
    ```bash
-   mtr-netdetect.sh google.com
+   paping www.google.com -p 80 -c 4
    ```
-
----
-
-## **Step 4: Stopping the Script**
-To stop the script, press:
-```text
-Ctrl + C
-```
-This will cleanly terminate the script and reset the terminal.
-
----
-
-## **How to Use NetDetect**
-### **Execution**
-Run the script:
-```bash
-./mtr-netdetect.sh <domain_or_ip>
-```
-
-### **Output Details**
-The script provides information such as:
-- **Hops**: Number of network hops.
-- **Loss%**: Packet loss percentage.
-- **Latency Stats**: Last, Average, Best, Worst, and Standard Deviation.
-- **Geolocation**: Country, State, and City.
-- **Proxy/VPN Detection**: Identifies if the hop uses a proxy or VPN.
-- **ASN**: Autonomous System Number.
-- **Risk Score**: Threat risk score for each hop.
 
 ---
 
 ## **Troubleshooting**
 
 ### **Error: Command Not Found**
-- Verify you’re in the correct directory:
+- Ensure you’re running the command from the correct directory:
   ```bash
-  cd /path/to/mtr-netdetect.sh
+  cd /path/to/paping/bin
   ```
-- Alternatively, use the absolute path:
+- Alternatively, use the absolute path to the binary:
   ```bash
-  /path/to/mtr-netdetect.sh google.com
+  /path/to/bin/i386-paping www.google.com -p 80 -c 4
   ```
 
 ### **Permission Denied**
-- Ensure the script has executable permissions:
+- Ensure the binary has executable permissions:
   ```bash
-  chmod +x mtr-netdetect.sh
+  chmod +x ./bin/i386-paping
   ```
 
 ### **Missing Dependencies**
 - Reinstall the required dependencies:
   ```bash
-  sudo apt install jq curl mtr -y
+  sudo apt install build-essential g++ g++-multilib libssl-dev
   ```
-
-### **API Key Issues**
-- Check and update the `api_key` variable in the script with your ProxyCheck API key.
 
 ---
 
 ## **Credits**
-- **Developer**: Sergio Marquina
+- **Repository**: [koolhazz/paping](https://github.com/koolhazz/paping)
 
 --- 
-
+```
