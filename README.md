@@ -1,6 +1,10 @@
-# **Paping Installation and Usage Guide**
 
-Paping is a network utility for testing TCP connectivity to a specific hostname or IP address. This guide provides step-by-step instructions for installing, compiling, and using Paping on Ubuntu.
+
+---
+
+# **NetDetect Installation and Usage Guide**
+
+NetDetect is a diagnostic tool for real-time network path visualization and analysis. This guide provides step-by-step instructions for installing, configuring, and using NetDetect.
 
 ---
 
@@ -8,63 +12,113 @@ Paping is a network utility for testing TCP connectivity to a specific hostname 
 Ensure you meet the following requirements:
 - A Linux-based operating system.
 - Sudo privileges.
-- Basic familiarity with terminal commands.
 
 ---
 
 ## **Step 1: Installation**
 
-### **1. Clone the Repository**
-Download the `paping` source code from GitHub:
+### **1. Install Required Dependencies**
+Run this command to install the necessary dependencies:
 ```bash
-git clone https://github.com/koolhazz/paping.git
+sudo apt update && sudo apt install jq curl mtr -y
 ```
 
-Navigate to the cloned directory:
+### **2. Download the Script**
+Navigate to your desired directory and download the script:
 ```bash
-cd paping
+cd ~
+wget -O mtr-netdetect.sh https://raw.githubusercontent.com/Cybersecsolution/NetDetect/refs/heads/main/mtr-netdetect.sh
 ```
 
-### **2. Update the System**
-Run the following command to update your package list:
+### **3. Make the Script Executable**
+Provide executable permissions:
 ```bash
-sudo apt update
-```
-
-### **3. Install Required Dependencies**
-Install the necessary tools and libraries:
-```bash
-sudo apt install build-essential g++ g++-multilib libssl-dev
-```
-
-### **4. Create the Output Directory**
-Set up the directory to store the compiled binary:
-```bash
-mkdir -p ./bin
+chmod +x mtr-netdetect.sh
 ```
 
 ---
 
-## **Step 2: Compile the Code**
-Build the project using `make`:
+## **Step 2: Running the Script**
+Run NetDetect with the following command:
 ```bash
-make
+sudo ./mtr-netdetect.sh google.com
 ```
+Replace `google.com` with the domain or IP address you wish to analyze.
 
 ---
 
-## **Step 3: Running Paping**
-
-### **1. Execute the Binary**
-Run `paping` using the compiled binary. Replace `www.google.com` with your target hostname or IP address, and `80` with the desired port:
-```bash
-./bin/i386-paping www.google.com -p 80 -c 4
-```
-
-### **2. Command Explanation**
-- **`www.google.com`**: The target hostname.
-- **`-p 80`**: Specifies the port number (80 for HTTP).
-- **`-c 4`**: Sets the number of connection attempts (4 in this example).
+## **Step 3: Optional Global Installation**
+To run NetDetect from any directory:
+1. Move the script to `/usr/local/bin`:
+   ```bash
+   sudo mv mtr-netdetect.sh /usr/local/bin/
+   ```
+2. Execute it globally:
+   ```bash
+   mtr-netdetect.sh google.com
+   ```
 
 ---
+
+## **Step 4: Stopping the Script**
+To stop the script, press:
+```text
+Ctrl + C
 ```
+This will cleanly terminate the script and reset the terminal.
+
+---
+
+## **How to Use NetDetect**
+### **Execution**
+Run the script:
+```bash
+./mtr-netdetect.sh <domain_or_ip>
+```
+
+### **Output Details**
+The script provides information such as:
+- **Hops**: Number of network hops.
+- **Loss%**: Packet loss percentage.
+- **Latency Stats**: Last, Average, Best, Worst, and Standard Deviation.
+- **Geolocation**: Country, State, and City.
+- **Proxy/VPN Detection**: Identifies if the hop uses a proxy or VPN.
+- **ASN**: Autonomous System Number.
+- **Risk Score**: Threat risk score for each hop.
+
+---
+
+## **Troubleshooting**
+
+### **Error: Command Not Found**
+- Verify you’re in the correct directory:
+  ```bash
+  cd /path/to/mtr-netdetect.sh
+  ```
+- Alternatively, use the absolute path:
+  ```bash
+  /path/to/mtr-netdetect.sh google.com
+  ```
+
+### **Permission Denied**
+- Ensure the script has executable permissions:
+  ```bash
+  chmod +x mtr-netdetect.sh
+  ```
+
+### **Missing Dependencies**
+- Reinstall the required dependencies:
+  ```bash
+  sudo apt install jq curl mtr -y
+  ```
+
+### **API Key Issues**
+- Check and update the `api_key` variable in the script with your ProxyCheck API key.
+
+---
+
+## **Credits**
+- **Developer**: Sergio Marquina
+
+--- 
+
